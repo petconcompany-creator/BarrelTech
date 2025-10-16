@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Same head as your index.html -->
+  <title>Gallery | Divine Global Partnership Energy</title>
+  <!-- Add this to your existing CSS -->
+  <style>
+    /* ============== GALLERY STYLES ============== */
+    .gallery {
+      background-color: var(--black-color);
+      padding-block: 5rem 2rem;
+    }
+
+    .gallery__filters {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 3rem;
+      flex-wrap: wrap;
+    }
+
+    .gallery__filter {
+      padding: 0.5rem 1.5rem;
+      background: transparent;
+      color: var(--text-color-light);
+      border: 2px solid var(--first-color);
+      border-radius: 2rem;
+      font-weight: var(--font-semi-bold);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .gallery__filter.active,
+    .gallery__filter:hover {
+      background: var(--first-gradient);
+      color: var(--white-color);
+      border-color: transparent;
+    }
+
+    .gallery__container {
+      overflow: hidden;
+    }
+
+    .gallery__section {
+      margin-bottom: 5rem;
+    }
+
+    .gallery__section-title {
+      font-size: var(--h2-font-size);
+      color: var(--white-color);
+      margin-bottom: 2rem;
+      text-align: center;
+      position: relative;
+      padding-bottom: 1rem;
+    }
+
+    .gallery__section-title::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 3px;
+      background: var(--first-gradient);
+    }
+
+    .gallery__grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .gallery__item {
+      background: var(--container-color);
+      border-radius: 0.5rem;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .gallery__item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+
+    .gallery__img-container {
+      position: relative;
+      overflow: hidden;
+      height: 250px;
+    }
+
+    .gallery__img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s;
+    }
+
+    .gallery__item:hover .gallery__img {
+      transform: scale(1.1);
+    }
+
+    .gallery__overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .gallery__item:hover .gallery__overlay {
+      opacity: 1;
+    }
+
+    .gallery__zoom {
+      color: var(--white-color);
+      font-size: 2rem;
+      transition: transform 0.3s;
+    }
+
+    .gallery__zoom:hover {
+      transform: scale(1.2);
+    }
+
+    .gallery__content {
+      padding: 1.5rem;
+    }
+
+    .gallery__title {
+      font-size: var(--h3-font-size);
+      color: var(--white-color);
+      margin-bottom: 0.5rem;
+    }
+
+    .gallery__desc {
+      color: var(--text-color-light);
+      font-size: var(--small-font-size);
+    }
+
+    /* Lightbox Styles */
+    .gallery__lightbox {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.9);
+      z-index: var(--z-fixed);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .gallery__lightbox.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .gallery__lightbox-content {
+      position: relative;
+      max-width: 90%;
+      max-height: 90%;
+    }
+
+    .gallery__lightbox-img {
+      max-height: 80vh;
+      max-width: 90vw;
+      border-radius: 0.5rem;
+    }
+
+    .gallery__lightbox-close {
+      position: absolute;
+      top: -50px;
+      right: 0;
+      color: var(--white-color);
+      font-size: 2rem;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+
+    .gallery__lightbox-close:hover {
+      color: var(--first-color);
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+      .gallery__grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .gallery__grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .gallery__filter {
+        padding: 0.5rem 1rem;
+        font-size: var(--small-font-size);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Same header as index.html -->
+  <header class="header" id="header">
+    <nav class="nav container">
+      <div class="nav__logo-container">
+        <a href="index.html" class="nav__logo">
+          <img src="./img/logo_nobg.png" alt="">
+        </a>
+        <span>Divine International Global<br>Partnership And Energy<br> Limited</span>
+      </div>
+
+      <div class="nav__menu" id="nav-menu">
+        <ul class="nav__list">
+          <li><a href="index.html" class="nav__link">Home</a></li>
+          <li><a href="about.html" class="nav__link">About Us</a></li>
+          <li><a href="services.html" class="nav__link">Services</a></li>
+          <li><a href="projects.html" class="nav__link">Projects</a></li>
+          <li><a href="gallery.html" class="nav__link active-link">Gallery</a></li>
+          <li><a href="contact.html" class="nav__link">Contact Us</a></li>
+        </ul>
+
+        <div class="nav__close" id="nav-close">
+          <i class="ri-close-large-line"></i>
+        </div>
+      </div>
+
+      <div class="nav__toggle" id="nav-toggle">
+        <i class="ri-menu-fill"></i>
+      </div>
+    </nav>
+  </header>
+
+  <main class="main">
+    <!-- ============== GALLERY SECTION ============== -->
+    <section class="gallery section" id="gallery">
+      <div class="gallery__container container">
+        <span class="section__subtitle">OUR WORK</span>
+        <h2 class="section__title">Project Gallery</h2>
+        
+        <!-- Filter Buttons -->
+        <div class="gallery__filters">
+          <button class="gallery__filter active" data-filter="all">All Projects</button>
+          <button class="gallery__filter" data-filter="installations">Installations</button>
+          <button class="gallery__filter" data-filter="maintenance">Maintenance</button>
+          <button class="gallery__filter" data-filter="overhaul">Overhaul</button>
+        </div>
+        
+        <!-- Section 1: Installations -->
+        <div class="gallery__section">
+          <h3 class="gallery__section-title">Equipment Installations</h3>
+          <div class="gallery__grid">
+            <!-- Item 1 -->
+            <div class="gallery__item" data-category="installations">
+              <div class="gallery__img-container">
+                <img src="placeholder.jpg" data-src="./img/gallery-1.jpg" alt="Pump Installation" class="gallery__img lazy-load">
+                <div class="gallery__overlay">
+                  <a href="#" class="gallery__zoom"><i class="ri-zoom-in-line"></i></a>
+                </div>
+              </div>
+              <div class="gallery__content">
+                <h4 class="gallery__title">Mud Pump Installation</h4>
+                <p class="gallery__desc">Lagos Facility • 2023</p>
+              </div>
+            </div>
+            
+            <!-- Item 2 -->
+            <div class="gallery__item" data-category="installations">
+              <div class="gallery__img-container">
+                <img src="placeholder.jpg" data-src="./img/gallery-2.jpg" alt="Compressor Setup" class="gallery__img lazy-load">
+                <div class="gallery__overlay">
+                  <a href="#" class="gallery__zoom"><i class="ri-zoom-in-line"></i></a>
+                </div>
+              </div>
+              <div class="gallery__content">
+                <h4 class="gallery__title">Compressor Setup</h4>
+                <p class="gallery__desc">Port Harcourt • 2022</p>
+              </div>
+            </div>
+            
+            <!-- Add 7 more items following same pattern -->
+          </div>
+        </div>
+        
+        <!-- Section 2: Maintenance -->
+        <div class="gallery__section">
+          <h3 class="gallery__section-title">Maintenance Projects</h3>
+          <div class="gallery__grid">
+            <!-- Maintenance items here -->
+          </div>
+        </div>
+        
+        <!-- Section 3: Overhaul -->
+        <div class="gallery__section">
+          <h3 class="gallery__section-title">Overhaul Projects</h3>
+          <div class="gallery__grid">
+            <!-- Overhaul items here -->
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Lightbox Modal -->
+    <div class="gallery__lightbox">
+      <div class="gallery__lightbox-content">
+        <img src="" alt="" class="gallery__lightbox-img">
+        <div class="gallery__lightbox-close">
+          <i class="ri-close-line"></i>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Same footer as index.html -->
+  
+  <!-- Add this to your existing JS (or use the JS I provided earlier) -->
+  <script>
+    // Gallery Filtering
+    document.querySelectorAll('.gallery__filter').forEach(filter => {
+      filter.addEventListener('click', function() {
+        // Remove active class from all filters
+        document.querySelectorAll('.gallery__filter').forEach(f => f.classList.remove('active'));
+        // Add active class to clicked filter
+        this.classList.add('active');
+        
+        const filterValue = this.dataset.filter;
+        const galleryItems = document.querySelectorAll('.gallery__item');
+        
+        // Show/hide items based on filter
+        galleryItems.forEach(item => {
+          if (filterValue === 'all' || item.dataset.category === filterValue) {
+            item.style.display = 'block';
+          } else {
+            item.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // Lightbox functionality
+    const galleryImages = document.querySelectorAll('.gallery__img');
+    const lightbox = document.querySelector('.gallery__lightbox');
+    const lightboxImg = document.querySelector('.gallery__lightbox-img');
+    const lightboxClose = document.querySelector('.gallery__lightbox-close');
+    
+    if (galleryImages && lightbox) {
+      galleryImages.forEach(img => {
+        img.addEventListener('click', function() {
+          lightbox.classList.add('active');
+          lightboxImg.src = this.src;
+          lightboxImg.alt = this.alt;
+          document.body.style.overflow = 'hidden';
+        });
+      });
+      
+      // Close lightbox
+      lightboxClose.addEventListener('click', function() {
+        lightbox.classList.remove('active');
+        document.body.style.overflow = '';
+      });
+      
+      // Close when clicking outside image
+      lightbox.addEventListener('click', function(e) {
+        if (e.target === lightbox) {
+          lightbox.classList.remove('active');
+          document.body.style.overflow = '';
+        }
+      });
+    }
+
+    // Lazy loading
+    if ('IntersectionObserver' in window) {
+      const lazyImages = document.querySelectorAll('.lazy-load');
+      const lazyObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const img = entry.target;
+            img.src = img.dataset.src;
+            img.classList.remove('lazy-load');
+            lazyObserver.unobserve(img);
+          }
+        });
+      }, {
+        rootMargin: '200px'
+      });
+
+      lazyImages.forEach(img => lazyObserver.observe(img));
+    }
+  </script>
+</body>
+</html>
