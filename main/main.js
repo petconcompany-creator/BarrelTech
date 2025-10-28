@@ -1,104 +1,137 @@
-/*=============== SHOW MENU ===============*/
-const navMenu = document.getElementById('nav-menu'),
-      navToggle = document.getElementById('nav-toggle'),
-      navClose  = document.getElementById('nav-close');
+/*=============== DOM READY ===============*/
+document.addEventListener("DOMContentLoaded", () => {
+  /*=============== NAV MENU TOGGLE ===============*/
+  const navMenu = document.getElementById("nav-menu"),
+        navToggle = document.getElementById("nav-toggle"),
+        navClose = document.getElementById("nav-close");
 
-// Menu Show
-  if(navToggle){
-    navToggle.addEventListener('click',()=>{
-      navMenu.classList.add('show-menu')
-    })
+  // Show Menu
+  if (navToggle) {
+    navToggle.addEventListener("click", () => {
+      navMenu.classList.add("show-menu");
+    });
   }
-// Menu Hidden
-if(navClose){
-  navClose.addEventListener("click",()=>{
-    navMenu.classList.remove('show-menu')
-  })
-}
 
+  // Hide Menu
+  if (navClose) {
+    navClose.addEventListener("click", () => {
+      navMenu.classList.remove("show-menu");
+    });
+  }
 
-/*=============== REMOVE MENU MOBILE ===============*/
-const navLink = document.querySelectorAll('.nav__link');
-const linkAction = ()=>{
-  const navMenu = document.getElementById('nav-menu');
-  // when clicked on each nav__link, we remove the show-menu class
-  navMenu.classList.remove('show-menu');
-}
-navLink.forEach(n => n.addEventListener("click",linkAction));
+  // Close menu on link click
+  const navLinks = document.querySelectorAll(".nav__link");
+  navLinks.forEach(link =>
+    link.addEventListener("click", () => navMenu.classList.remove("show-menu"))
+  );
 
-/*=============== CHANGE BACKGROUND HEADER ===============*/
-const bgHeader = () => {
-  const header = document.getElementById('header');
-  const logotxt = document.getElementById('logo-txt');
+  /*=============== CHANGE BACKGROUND HEADER ===============*/
+  const header = document.getElementById("header");
+  const logoTxt = document.getElementById("logo-txt");
 
-  this.scrollY >= 50 
-    ? (header.classList.add('bg-header'), 
-       logotxt.classList.add('logo__colored'))
-    : (header.classList.remove('bg-header'), 
-       logotxt.classList.remove('logo__colored'));
-};
+  const bgHeader = () => {
+    if (window.scrollY >= 50) {
+      header.classList.add("bg-header");
+      logoTxt.classList.add("logo__colored");
+    } else {
+      header.classList.remove("bg-header");
+      logoTxt.classList.remove("logo__colored");
+    }
+  };
+  window.addEventListener("scroll", bgHeader);
 
-window.addEventListener('scroll', bgHeader);
-bgHeader();
+  /*=============== SCROLL UP BUTTON ===============*/
+  const scrollUpBtn = document.getElementById("scroll-up");
+  const showScrollUp = () => {
+    if (window.scrollY >= 350) {
+      scrollUpBtn.classList.add("show-scroll");
+    } else {
+      scrollUpBtn.classList.remove("show-scroll");
+    }
+  };
+  window.addEventListener("scroll", showScrollUp);
 
+  /*=============== ACTIVE NAV LINK ON SCROLL ===============*/
+  const sections = document.querySelectorAll("section[id]");
 
+  const scrollActive = () => {
+    const scrollY = window.scrollY;
+    const headerHeight = header.offsetHeight; // Get actual header height
 
-/*=============== SWIPER SERVICES ===============*/ 
-const swiperServices = new Swiper('.services__swiper', {
-  loop: true,
-  grabCursor: true,
-  spaceBetween: 24,
-  slidesPerView: 'auto',
-  centeredSlides: true,
-  navigation: {
-    nextEl: '.swiper-button-next',
-    prevEl: '.swiper-button-prev',
-  },
+    sections.forEach(current => {
+      const sectionHeight = current.offsetHeight;
+      const sectionTop = current.offsetTop - headerHeight - 10; // Adjust for spacing
+      const sectionId = current.getAttribute("id");
+      const sectionLink = document.querySelector(`.nav__menu a[href*=${sectionId}]`);
+
+      if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
+        sectionLink?.classList.add("active-link");
+      } else {
+        sectionLink?.classList.remove("active-link");
+      }
+    });
+  };
+  window.addEventListener("scroll", scrollActive);
+
+  /*=============== SWIPER SERVICES ===============*/
+  if (typeof Swiper !== "undefined") {
+    new Swiper(".services__swiper", {
+      loop: true,
+      grabCursor: true,
+      spaceBetween: 24,
+      slidesPerView: "auto",
+      centeredSlides: true,
+      navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
+      },
+    });
+  }
+
+  /*=============== SCROLL REVEAL ANIMATION ===============*/
+  if (typeof ScrollReveal !== "undefined") {
+    const sr = ScrollReveal({
+      origin: "top",
+      distance: "100px",
+      duration: 2500,
+      delay: 400,
+      reset: true,
+    });
+
+    sr.reveal(".home__content, .services__data, .services__swiper, .footer__container");
+    sr.reveal(".home__images", { origin: "bottom", delay: 1200 });
+    sr.reveal(".about__images, .contact__img", { origin: "left" });
+    sr.reveal(".about__data, .contact__data", { origin: "right" });
+    sr.reveal(".projects__card", { interval: 100 });
+  }
+
+  /*=============== FORM SUBMISSION ===============*/
+  const form = document.getElementById("enrollForm");
+  if (form) {
+    form.addEventListener("submit", async e => {
+      e.preventDefault();
+
+      const fullName = form.name.value.trim();
+      const email = form.email.value.trim();
+      const course = form.course.value;
+
+      try {
+        const res = await fetch("http://localhost:3000/api/enroll-sqlite", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ fullName, email, course }),
+        });
+
+        if (res.ok) {
+          alert("✅ Registered successfully!");
+          form.reset();
+        } else {
+          alert("❌ Failed to register. Please try again.");
+        }
+      } catch (err) {
+        console.error("Fetch error:", err);
+        alert("⚠️ Server not reachable. Please check your backend.");
+      }
+    });
+  }
 });
-
-/*=============== SHOW SCROLL UP ===============*/ 
-const scrollUp = ()=>{
-  const scrollUp = document.getElementById('scroll-up');
-  // when the scrollbar is higher than 350 viewpport height, and the show-scroll class to the a tag with the scroll
-  this.scrollY  >= 350 ? scrollUp.classList.add('show-scroll') : scrollUp.classList.remove('show-scroll')
-}
-window.addEventListener('scroll',scrollUp)
-scrollUp();
-
-
-/*=============== SCROLL SECTIONS ACTIVE LINK ===============*/
-const sections = document.querySelectorAll('section[id]');
-const scrollActive = () =>{
-  const scrollDown = window.scrollY;
-  sections.forEach(current => {
-    const sectionHeight = current.offsetHeight,
-          sectionTop = current.offsetTop - 58,
-          sectionId = current.getAttribute('id'),
-          sectionsClass = document.querySelector('.nav__menu a[href*=' + sectionId + ']');
-    if(scrollDown > sectionTop && scrollDown <= sectionTop + sectionHeight){
-      sectionsClass.classList.add('active-link')
-    }
-    else{
-      sectionsClass.classList.remove('active-link')
-    }
-        
-  })
-}
-window.addEventListener('scroll',scrollActive);
-scrollActive();
-
-
-/*=============== SCROLL REVEAL ANIMATION ===============*/
-const sr = ScrollReveal({
-  origin: 'top',
-  distance: '100px',
-  duration: 2500,
-  delay: 400,
-  reset: true,
-})
-
-sr.reveal(`.home__content,.services__data,.services__swiper, .footer__container`);
-sr.reveal(`.home__images`,{origin: 'bottom', delay: 1200});
-sr.reveal(`.about__images , .contact__img`,{origin: 'left'});
-sr.reveal(`.about__data, .contact__data`,{origin: 'right'});
-sr.reveal(`.projects__card`,{interval: 100});

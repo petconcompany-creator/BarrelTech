@@ -3,16 +3,16 @@
 
 /*=============== VARIABLES CSS ===============*/
 :root {
-  --header-height: 3.5rem;
+  --header-height: 2.5rem;
 
   /*========== Colors ==========*/
   /*Color mode HSL(hue, saturation, lightness)*/
-  --first-color: hsl(18, 95%, 55%);
-  --second-color: hsl(42, 98%, 52%);
+  --first-color: hsl(217, 91%, 60%);   /* Bright blue */
+  --second-color: hsl(200, 85%, 55%); 
   --first-gradient: linear-gradient(
     90deg,
-    hsl(18, 95%, 55%),
-    hsl(18, 98%, 64%)
+    hsl(217, 91%, 60%),
+    hsl(200, 85%, 55%)
   );
   --title-color: hsl(255, 12%, 12%);
   --text-color: hsl(225, 12%, 24%);
@@ -173,7 +173,7 @@ img {
   top: 0;
   left: 0;
   background-color: transparent;
-  z-index: var(--z-fixed);
+  z-index: 100;
   transition: background-color .4s;
 }
 .slider{
@@ -556,6 +556,7 @@ img {
 }
 
 
+
 /*=============== PROJECTS ===============*/
 .projects{
   background-color: var(--black-color);
@@ -589,6 +590,8 @@ img {
   color: var(--title-color);
   margin-bottom: 1.5rem;
 }
+
+
 
 /*=============== CONTACT ===============*/
 .contact__container{
